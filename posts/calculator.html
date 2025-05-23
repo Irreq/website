@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Antenna Calculator</title>
+  <link rel="stylesheet" href="../styles/style.css" />
+  <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+  <style>
+    
+  </style>
+</head>
+
+<body class="container">
+  <header id="banner">
+      <nav>
+          <button class="button" onclick="location.href='/index.html'">
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <div class="front">
+                  <span>HOME</span>
+              </div>
+          </button>
+          <button class="button" onclick="location.href='/blog.html'">
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <div class="front">
+                  <span>BLOG</span>
+              </div>
+          </button>
+      </nav>
+      <hr />
+  </header>
+  <main id="content">
+    <article>
+      <header id="post-header">
+        <h1>Antenna Calculator</h1>
+        <div>
+          <time>2025-02-07</time>
+        </div>
+      </header>
+      <h1 id="the-dipole">The Dipole</h1>
+      <p>A dipole antenna is one of the simplest and most widely used
+      types of antennas. It consists of two conductive elements,
+      typically made of metal, that are equal in length and are arranged
+      in a straight line. These elements are fed by an alternating
+      current (AC) at the center, which creates an oscillating
+      electromagnetic field. The basic form of a dipole antenna is often
+      represented as two straight rods, with the feed point in the
+      center.</p>
+      <ul>
+      <li><p>Resonance: The total length of the dipole antenna is
+      usually half the wavelength (λ/2λ/2) of the frequency it is
+      designed to receive or transmit. This resonance ensures efficient
+      radiation of electromagnetic waves.</p></li>
+      <li><p>Radiation Pattern: The dipole has an omnidirectional
+      radiation pattern in the plane perpendicular to its axis. This
+      means it radiates energy equally in all directions around it,
+      except along its axis (where radiation is minimal).</p></li>
+      <li><p>Impedance: The feed point impedance of a standard dipole
+      antenna is approximately 73 ohms in free space, which makes it
+      well-suited for many practical applications without requiring
+      significant impedance matching.</p></li>
+      </ul>
+      <p>Dipoles are commonly used in applications like radio,
+      television transmission, and in communication systems because of
+      their simplicity, effectiveness, and ease of construction.</p>
+      <h2 id="dipole-calculator">Dipole Calculator</h2>
+      <p><input id="freq" type="number" placeholder="Frequency">
+      <select id="freqUnit"> <option value="1">Hz</option>
+      <option value="1000">kHz</option>
+      <option value="1000000" selected>MHz</option>
+      <option value="1000000000">GHz</option> </select></p>
+      <p><select id="waveUnit"> <option value="1">meters (m)</option>
+      <option value="10">decimeters (dm)</option>
+      <option value="100" selected>centimeters (cm)</option>
+      <option value="1000">millimeters (mm)</option> </select></p>
+      <p><span class="math display">\[
+      \lambda = \frac{c}{f}
+      \]</span></p>
+      <button onclick="convert()">
+      Convert
+      </button>
+      <!-- <button class="button">
+        <span class="shadow"></span>
+        <span class="edge"></span>
+        <div class="front">
+          <span>info</span>
+        </div>
+      </button> -->
+      <p>
+      Wavelength: <span id="result"></span>
+      </p>
+      <script>
+        function convert() {
+          let c = 299792458; // Speed of light in m/s
+          let freq = parseFloat(document.getElementById('freq').value) || 0;
+          let freqUnit = parseFloat(document.getElementById('freqUnit').value);
+          let waveUnit = parseFloat(document.getElementById('waveUnit').value);
+
+          if (freq > 0) {
+            let wavelength = c / (freq * freqUnit); // Wavelength in meters
+            document.getElementById('result').textContent = (wavelength * waveUnit).toFixed(6) + " " + document.getElementById('waveUnit').selectedOptions[0].text;
+          } else {
+            document.getElementById('result').textContent = "Enter a valid frequency!";
+          }
+        }
+      </script>
+      <hr>
+      <h1 id="ula">ULA</h1>
+      <p>A Uniform Linear Array (ULA) antenna consists of multiple
+      identical antenna elements arranged in a straight line, with equal
+      spacing between them. The key characteristic of a ULA is that the
+      elements are typically fed with the same amplitude but with
+      different phases to control the direction of the resulting
+      radiation pattern. By adjusting the phase shifts, a ULA can steer
+      the main beam of the antenna without physically moving the array,
+      enabling directional communication and enhanced signal reception.
+      ULAs are commonly used in applications such as radar systems,
+      wireless communications, and satellite communications due to their
+      simplicity and efficiency.</p>
+      <h2 id="ula-beam-pattern">ULA Beam Pattern</h2>
+      <div id="plot" class="plotlyplot">
+
+      </div>
+      <div class="controls">
+      <p>Steering Angle (°):<br />
+      <input id="steeringAngle" type="number" value="0" onkeydown="checkEnter(event)">
+      <input id="angleSlider" type="range" min="-90" max="90" value="0" step="0.1" oninput="syncInputs('steeringAngle', 'angleSlider')" onkeydown="checkEnter(event)"></p>
+      <p>Element Separation (λ fraction):<br />
+      <input id="elementSpacing" type="number" value="0.5" step="0.1" onkeydown="checkEnter(event)">
+      <input id="spacingSlider" type="range" min="0.1" max="4.0" value="0.5" step="0.01" oninput="syncInputs('elementSpacing', 'spacingSlider')" onkeydown="checkEnter(event)"></p>
+      <p>Number of Elements:<br />
+      <input id="numElements" type="number" value="8" min="2" onkeydown="checkEnter(event)">
+      <input id="elementsSlider" type="range" min="2" max="64" value="8" step="1" oninput="syncInputs('numElements', 'elementsSlider')" onkeydown="checkEnter(event)"></p>
+      </div>
+      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+      <p>The coefficients to steer a linear array into a direction <span
+      class="math inline">\(\theta\)</span> can be computed as
+      follows:</p>
+      <p><span class="math display">\[
+      i = 1, ..., m
+      \]</span></p>
+      <p><span class="math display">\[
+      e^{i\cdot k}
+      \]</span></p>
+      <style>
+
+        .controls {
+          display: flex;
+          flex-direction: column;
+        }
+
+        input[type="number"], input[type="range"] {
+          background-color: #444444;
+          border: 1px solid #666666;
+          border-radius: 5px;
+          color: white;
+          font-size: 16px;
+          width: 100%;
+        }
+
+        input[type="range"] {
+        -webkit-appearance: none; /* Removes default styling for WebKit browsers */
+
+        height: 8px;  /* Slider height */
+        background: #ddd;  /* Light background */
+        border-radius: 5px;  /* Rounded corners */
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      input[type="range"]::-webkit-slider-runnable-track {
+        background: #ddd;  /* Light background for the track */
+        border-radius: 5px;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none; /* Removes default styling for WebKit browsers */
+        height: 20px;  /* Thumb height */
+        width: 20px;   /* Thumb width */
+        border-radius: 50%;  /* Circular thumb */
+        background: red;  /* Red thumb */
+        cursor: pointer;
+      }
+
+      input[type="range"]::-moz-range-track {
+        background: #ddd;  /* Light background for the track (Firefox) */
+        border-radius: 5px;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        height: 20px;  /* Thumb height (Firefox) */
+        width: 20px;   /* Thumb width (Firefox) */
+        border-radius: 50%;  /* Circular thumb (Firefox) */
+        background: red;  /* Red thumb (Firefox) */
+        cursor: pointer;
+      }
+
+      input[type="range"]:hover {
+        background: #bbb;  /* Darken track when hovered */
+      }
+
+
+      </style>
+      <hr>
+      <h1 id="uca">UCA</h1>
+      <p>A Uniform Circular Array (UCA) antenna consists of multiple
+      antenna elements arranged evenly in a circular pattern. The
+      elements are spaced equally along the circumference of the circle,
+      and the antenna is typically fed from the center. UCAs are
+      commonly used in applications requiring omnidirectional or complex
+      beamforming capabilities, such as in radar, satellite
+      communication, and wireless networks.</p>
+      <ul>
+      <li><p>Omnidirectional Pattern: In the plane of the array, UCAs
+      can provide an omnidirectional radiation pattern.</p></li>
+      <li><p>Beamforming: By adjusting the phase shifts of the signals
+      fed to each element, a UCA can form directed beams in various
+      directions, enabling applications like beam steering.</p></li>
+      <li><p>Applications: UCAs are ideal for systems where 360-degree
+      coverage is required, such as mobile base stations or monitoring
+      systems.</p></li>
+      </ul>
+      <p>The uniform distribution of elements in a circular shape makes
+      the UCA a flexible and efficient antenna design for several
+      advanced communication systems.</p>
+      <h2 id="uca-beam-pattern">UCA Beam Pattern</h2>
+      <div id="plotUCA" class="plotlyplot">
+
+      </div>
+      <div class="controlsUCA">
+      <p>Steering Angle (°):<br />
+      <input id="steeringAngleUCA" type="number" value="0" onkeydown="checkEnterUCA(event)">
+      <input id="angleSliderUCA" type="range" min="0" max="360" value="0" step="1" oninput="syncInputsUCA('steeringAngleUCA', 'angleSliderUCA')" onkeydown="checkEnterUCA(event)"></p>
+      <p>Radius (m):<br />
+      <input id="elementSpacingUCA" type="number" value="0.5" step="0.1" onkeydown="checkEnterUCA(event)">
+      <input id="spacingSliderUCA" type="range" min="0.1" max="4.0" value="0.5" step="0.01" oninput="syncInputsUCA('elementSpacingUCA', 'spacingSliderUCA')" onkeydown="checkEnterUCA(event)"></p>
+      <p>Number of Elements:<br />
+      <input id="numElementsUCA" type="number" value="8" min="5" onkeydown="checkEnterUCA(event)">
+      <input id="elementsSliderUCA" type="range" min="2" max="32" value="8" step="1" oninput="syncInputsUCA('numElementsUCA', 'elementsSliderUCA')" onkeydown="checkEnterUCA(event)"></p>
+      </div>
+      <script>
+
+        function checkEnter(event) {
+          if (event.key === 'Enter') {
+            plotBeamPattern();
+          }
+        }
+
+        function syncInputs(textId, sliderId) {
+          let textInput = document.getElementById(textId);
+          let sliderInput = document.getElementById(sliderId);
+          textInput.value = sliderInput.value;
+          plotBeamPattern(); // Update plot dynamically
+        }
+
+        function arrayFactor(theta, theta0, N, d) {
+          let k = 2 * Math.PI; // Wave number (normalized)
+          let af = theta.map(t => {
+            let sumReal = 0, sumImag = 0;
+            let t_rad = t * Math.PI / 180;
+            let t0_rad = theta0 * Math.PI / 180;
+            let phaseShift = k * d * (Math.cos(t_rad) - Math.cos(t0_rad));
+
+            for (let n = 0; n < N; n++) {
+              sumReal += Math.cos(n * phaseShift);
+              sumImag += Math.sin(n * phaseShift);
+            }
+            
+            return Math.sqrt(sumReal ** 2 + sumImag ** 2); // Magnitude
+          });
+
+          let maxAF = Math.max(...af);
+          return af.map(a => 20 * Math.log10(a / maxAF)); // Normalize & convert to dB
+        }
+
+      function computeHalfPowerBeamwidth(values, theta) {
+          // Find the max value and its index
+          let K = 0;
+          let maxVal = values[0];
+
+          for (let i = 1; i < values.length; i++) {
+              if (values[i] > maxVal) {
+                  maxVal = values[i];
+                  K = i;
+              }
+          }
+
+          const halfMax = maxVal / 2;
+          let leftIndex = K, rightIndex = K;
+
+          // Search left for half power point
+          while (leftIndex > 0 && values[leftIndex] > -3) {
+              leftIndex--;
+          }
+
+          // Search right for half power point
+          while (rightIndex < values.length - 1 && values[rightIndex] > -3) {
+              rightIndex++;
+          }
+
+          // Compute beamwidth
+          const beamwidth = Math.abs(theta[rightIndex] - theta[leftIndex]);
+
+          return { maxIndex: K, maxValue: maxVal, leftIndex, rightIndex, beamwidth };
+      }
+
+        function plotBeamPattern() {
+          let theta0 = parseFloat(document.getElementById("steeringAngle").value) || 0;
+          let d = parseFloat(document.getElementById("elementSpacing").value) || 0.5;
+          let N = parseInt(document.getElementById("numElements").value) || 8;
+
+          document.getElementById("angleSlider").value = theta0;
+          document.getElementById("spacingSlider").value = d;
+          document.getElementById("elementsSlider").value = N;
+
+          if (N < 2) {
+            alert("Number of elements must be at least 2.");
+            return;
+          }
+
+          let theta = Array.from({ length: 360 }, (_, i) => i/2); // -90 to 90 degrees
+          let af_dB = arrayFactor(theta, theta0+90, N, d);
+
+          theta = Array.from({ length: 360 }, (_, i) => i/2-90);
+
+          let trace = {
+            type: "scatterpolar",
+            mode: "lines",
+            theta: theta,
+            r: af_dB,
+            line: { color: "red" }, // Red beam color
+          };
+
+          let halfpwr = "";
+
+          if (d <= 0.5) {
+          let index = theta0 + 90;
+          const result = computeHalfPowerBeamwidth(af_dB, theta);
+          halfpwr = `, beamwidth = ${result.beamwidth.toFixed(1)}°`;
+          }
+
+          let angle = `${theta0}`.padStart(3);
+          let dstring = `${d}`.padStart(3)
+
+          Plotly.newPlot("plot", [trace], {
+            polar: {
+              angularaxis: {
+                direction: "clockwise",
+                tickmode: 'array',
+                showline: true,
+                linewidth: 2,
+                tickvals: [-90, -75,-60, -45,-30, -15, 0, 15, 30, 45, 60, 75, 90],
+                linecolor: 'white',
+                tickcolor: 'white',
+              },
+              radialaxis: {
+                visible: true,
+                range: [-40, 0],
+                dtick: 3,
+                showline: true,
+                linewidth: 2,
+                linecolor: 'white',
+                tickcolor: 'white',
+                angle: 0,
+                tickangle: 0, // Rotate the labels by 90 degrees
+              },
+              sector: [0, 180],
+              bgcolor: 'transparent',
+            },
+            paper_bgcolor: 'transparent',
+            font: {
+              color: 'white'
+            },
+            title: {
+              text: `ULA Beam Pattern ${N}x1 (θ₀ = ${angle}°, d/λ = ${dstring}${halfpwr})`,
+              font: {
+                color: 'white'
+              }
+            },
+          });
+        }
+
+        plotBeamPattern(); // Initial plot with default values
+      </script>
+      <script>
+
+        function checkEnterUCA(event) {
+          if (event.key === 'Enter') {
+            plotBeamPatternUCA();
+          }
+        }
+
+        function syncInputsUCA(textId, sliderId) {
+          let textInput = document.getElementById(textId);
+          let sliderInput = document.getElementById(sliderId);
+          textInput.value = sliderInput.value;
+          plotBeamPatternUCA(); // Update plot dynamically
+        }
+
+
+      function steeringAngleUCA(N, radius, angle) {
+          let w = [];
+          // Loop over all elements to calculate the steering vector
+          for (let n = 0; n < N; n++) {
+              // Positions of the array elements on the circle
+              let x = radius * Math.cos(2 * Math.PI * n / N);  // X-coordinate
+              let y = radius * Math.sin(2 * Math.PI * n / N);  // Y-coordinate
+              
+              // Calculate the phase shift for each element at the steering angle (angle)
+              let phaseShift = 2 * Math.PI * (x * Math.cos(angle) + y * Math.sin(angle));
+
+              // The real and imaginary components of the steering vector
+              let realPart = Math.cos(phaseShift);  // Real part
+              let imagPart = Math.sin(phaseShift);  // Imaginary part
+              
+              w.push({ real: realPart, imag: imagPart });
+          }
+          return w;
+      }
+      function arrayFactorUCA(theta, theta0, N, d) {
+          let k = 2 * Math.PI;
+          let radius = d / (Math.sqrt(2.0) * Math.sqrt(1.0 - Math.cos(2 * Math.PI / N)));
+          radius = d;
+          
+          // Compute the reference steering vector for theta0
+          let f = steeringAngleUCA(N, radius, theta0 * Math.PI / 180);
+
+          // Compute the array factor for all theta angles
+          let af = theta.map(t => {
+              let sumReal = 0, sumImag = 0;
+              let t_rad = t * Math.PI / 180;
+
+              // Compute the steering vector for the current angle t_rad
+              let w = steeringAngleUCA(N, radius, t_rad);
+
+              // Combine the steering vectors (w for t_rad and f for theta0)
+              for (let n = 0; n < N; n++) {
+                  sumReal += w[n].real * f[n].real;  // Combine real parts
+                  sumImag += w[n].imag * f[n].imag;  // Combine imaginary parts
+              }
+
+              // Calculate magnitude of the array factor
+              return Math.sqrt(sumReal ** 2 + sumImag ** 2);
+          });
+
+          // Normalize the array factor and convert to dB
+          let maxAF = Math.max(...af);
+          return af.map(a => 20 * Math.log10(a / maxAF)); // Normalize & convert to dB
+      }
+      function plotBeamPatternUCA() {
+          let theta0 = parseFloat(document.getElementById("steeringAngleUCA").value) || 0;
+          let d = parseFloat(document.getElementById("elementSpacingUCA").value) || 0.5;
+          let N = parseInt(document.getElementById("numElementsUCA").value) || 8;
+
+          document.getElementById("angleSliderUCA").value = theta0;
+          document.getElementById("spacingSliderUCA").value = d;
+          document.getElementById("elementsSliderUCA").value = N;
+
+          if (N < 2) {
+              alert("Number of elements must be at least 2.");
+              return;
+          }
+
+          // Theta values from 0 to 360 degrees
+          let theta = Array.from({ length: 360 }, (_, i) => i);
+          let af_dB = arrayFactorUCA(theta, theta0, N, d);
+
+          let trace = {
+              type: "scatterpolar",
+              mode: "lines",
+              theta: theta,
+              r: af_dB,
+              line: { color: "red" },  // Red beam color
+          };
+
+          Plotly.newPlot("plotUCA", [trace], {
+              polar: {
+                  angularaxis: {
+                      direction: "clockwise",
+                      tickmode: 'array',
+                      showline: true,
+                      linewidth: 2,
+                      // tickvals: [0, 45, 90, 135, 180, 225, 270, 315], // Custom ticks for 0-360 degrees
+                      linecolor: 'white',
+                      tickcolor: 'white',
+                  },
+                  radialaxis: {
+                      visible: true,
+                      range: [-40, 0],
+                      showline: true,
+                      linewidth: 2,
+                      linecolor: 'white',
+                      tickcolor: 'white',
+                      angle: 0,
+                      tickangle: 0, // Rotate the labels by 90 degrees
+                  },
+                  bgcolor: 'transparent', // Background color of the polar plot
+              },
+              paper_bgcolor: 'transparent',
+              font: {
+                  color: 'white' // Font color for the plot
+              },
+              title: {
+                  text: `UCA Beam Pattern ${N} Elements (θ₀ = ${theta0}°, d/λ = ${d})`,
+                  font: {
+                      color: 'white'
+                  }
+              }
+          });
+      }
+
+        plotBeamPatternUCA(); // Initial plot with default values
+      </script>
+      <h2 id="credits">Credits</h2>
+      <p>This post was made possible thanks to:</p>
+      <ul>
+      <li><a href="https://plotly.com/javascript/">Plotly</a> -
+      JavaScript Open Source Graphing Library</li>
+      <li><a href="https://www.mathjax.org/">MathJax</a> - JavaScript
+      display engine for mathematics</li>
+      </ul>
+    </article>
+  </main>
+  <footer>
+    <hr>
+    <br>
+     <!-- © 2021-2025 × Built with [Pandoc](https://pandoc.org/) -->
+     <p>2021-2025 Built with <a href="https://pandoc.org/">Pandoc</a></p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hierarchical Triangular Mesh (HTM)</title>
+  <link rel="stylesheet" href="../styles/style.css" />
+  <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+  <style>
+    
+  </style>
+</head>
+
+<body class="container">
+  <header id="banner">
+      <nav>
+          <button class="button" onclick="location.href='/index.html'">
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <div class="front">
+                  <span>HOME</span>
+              </div>
+          </button>
+          <button class="button" onclick="location.href='/blog.html'">
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <div class="front">
+                  <span>BLOG</span>
+              </div>
+          </button>
+      </nav>
+      <hr />
+  </header>
+  <main id="content">
+    <article>
+      <header id="post-header">
+        <h1>Hierarchical Triangular Mesh (HTM)</h1>
+        <div>
+          <time>2025-03-02</time>
+        </div>
+      </header>
+      <p>HTM is space-partitioning algorithm for spherical data
+      utilizing subdivisions of the octahedron.</p>
+      <blockquote>
+      <p>This is an implementation, not to be confused with the <a
+      href="https://www.researchgate.net/publication/226072008">original</a></p>
+      </blockquote>
+      <p>A <strong>Hierarchical Triangle Mesh (HTM)</strong> is a data
+      structure used to represent and manage large-scale triangle meshes
+      efficiently, particularly in computer graphics, geographic
+      information systems (GIS), and 3D modeling.</p>
+      <p><img align="right" width="300" src="../assets/posts/htm/htm_sphere_depth=3.svg" /></p>
+      <h2 id="overview">Overview</h2>
+      <p>A <strong>Hierarchical Triangle Mesh (HTM)</strong> is a data
+      structure used to represent and manage large-scale triangle meshes
+      efficiently, particularly in computer graphics, geographic
+      information systems (GIS), and 3D modeling.</p>
+      <blockquote>
+      <p>There are multiple implementations for spherical data and this
+      is just one of <a href="example.com">them</a>.</p>
+      </blockquote>
+      <p>HTM organizes a triangle mesh in a tree-like hierarchy,
+      allowing:</p>
+      <ul>
+      <li>Efficient <strong>Level of Detail (LOD)</strong>
+      rendering.</li>
+      <li>Fast <strong>spatial queries</strong> (e.g., collision
+      detection, ray tracing).</li>
+      <li>Reduced memory usage through <strong>shared vertices and
+      structure reuse</strong>.</li>
+      </ul>
+      <h2 id="structure">Structure</h2>
+      <ul>
+      <li><strong>Base mesh</strong>: Coarse approximation of the shape,
+      usually using large triangles.</li>
+      <li><strong>Refinement hierarchy</strong>: Each triangle can be
+      subdivided (typically into four) to increase detail.</li>
+      <li><strong>Tree representation</strong>: Often a quadtree or
+      binary triangle tree.</li>
+      </ul>
+      <h2 id="subdivision-scheme">Subdivision Scheme</h2>
+      <p>Each triangle is split into four smaller triangles by
+      connecting the midpoints of its edges.</p>
+      <h2 id="applications">Applications</h2>
+      <ul>
+      <li>Terrain rendering (e.g., planetary-scale surfaces)</li>
+      <li>3D visualization and simulation</li>
+      <li>Progressive mesh transmission</li>
+      <li>Mesh simplification and compression</li>
+      </ul>
+      <h2 id="advantages">Advantages</h2>
+      <ul>
+      <li>Scalable detail management</li>
+      <li>Fast access and culling</li>
+      <li>Good for streaming and progressive loading</li>
+      </ul>
+      <h2 id="limitations">Limitations</h2>
+      <ul>
+      <li>More complex to implement than flat meshes</li>
+      <li>May require careful management to avoid cracks and artifacts
+      between LOD levels</li>
+      </ul>
+      <h2 id="related-concepts">Related Concepts</h2>
+      <ul>
+      <li>Quadtrees</li>
+      <li>BSP trees</li>
+      <li>Progressive meshes</li>
+      <li>Geometry clipmaps</li>
+      </ul>
+      <h2 id="background">Background</h2>
+      <p>Space partitioning algorithms are used everywhere there is
+      spatial data. Usecases are but not limited to databases and 3D
+      models. These are oftentimes great for eucleidian data but will
+      not work for inherently spherical data. The technical reader may
+      point out that this algorithm is not pure spherical aswell since
+      it contains distortions but it is “spherical-enough”.</p>
+      <hr />
+      <h1 id="datastructure-and-algorithms">Datastructure and
+      Algorithms</h1>
+      <p>The datastructure is based on the quadtree approach where the
+      space is divided recursively in space.</p>
+      <figure>
+      <img src="../assets/posts/htm/htm_triangle.svg"
+      alt="HTM triangle partition" />
+      <figcaption aria-hidden="true">HTM triangle partition</figcaption>
+      </figure>
+      <h2 id="layout">Layout</h2>
+      <p>The first 6 iterations of the HTM</p>
+      <table>
+      <colgroup>
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th><img src="../assets/posts/htm/htm_sphere_depth=0.svg"
+      alt="Depth = 0" /></th>
+      <th><img src="../assets/posts/htm/htm_sphere_depth=1.svg"
+      alt="Depth = 1" /></th>
+      <th><img src="../assets/posts/htm/htm_sphere_depth=2.svg"
+      alt="Depth = 2" /></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Depth = 0, faces = 8</td>
+      <td>Depth = 1, faces = 32</td>
+      <td>Depth = 2, faces = 128</td>
+      </tr>
+      </tbody>
+      </table>
+      <table>
+      <colgroup>
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th><img src="../assets/posts/htm/htm_sphere_depth=3.svg"
+      alt="Depth = 3" /></th>
+      <th><img src="../assets/posts/htm/htm_sphere_depth=4.svg"
+      alt="Depth = 4" /></th>
+      <th><img src="../assets/posts/htm/htm_sphere_depth=5.svg"
+      alt="Depth = 5" /></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Depth = 3, faces = 512</td>
+      <td>Depth = 4, faces = 2048</td>
+      <td>Depth = 5, faces = 8192</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>The number of faces for each full iteration of the HTM follows
+      the following pattern:</p>
+      <p><span class="math display">\[
+      N_{faces} = 8 \cdot 4 ^ d
+      \]</span></p>
+      <h2 id="bit-representation">Bit representation</h2>
+      <h3 id="bit-0">Bit 0</h3>
+      <p>The first bit represents the pole, where <code>0</code>
+      translates to the northern hemisphere and a <code>1</code> the
+      south.</p>
+      <h3 id="bit-1---2">Bit 1 - 2</h3>
+      <p>The following two bits corresponds to each of the four sides
+      where 0 is <span class="math display">\[ 0 \leq \theta \leq
+      \frac{\pi}{2} \]</span></p>
+      <h3 id="bit-3--">Bit 3 -</h3>
+      <p>The Following number of bits depends of the size of the
+      integer, using 64 bit, the id may hold up to a depth of 30.</p>
+      <hr />
+      <h2 id="motivation">Motivation</h2>
+      <p>We needed a datastructure that provides the following:</p>
+      <ul>
+      <li>Fast neighbor lookup and at multiple levels</li>
+      <li>Optimized for spherical sensor data (<span
+      class="math inline">\(\theta,\phi\)</span>)</li>
+      </ul>
+      <p>For our peak segmentation on realtime spherical data. The naive
+      way is to precompute the LUT, but that still requires memory
+      access and is not cache friendly for our implementation.</p>
+      <h1 id="neighbors">Neighbors</h1>
+      <p>The benefit of the HTM recursive structure is that there is a
+      predefined structure to find the neighbors. In the current
+      constellation, the neighbors can.</p>
+      <h2 id="the-trivial-case">The trivial Case</h2>
+      <p>If the current node is the center of the triangle, that is its
+      <code>ID</code> ends with a 0, its immediate neighbors are: <span
+      class="math display">\[ \text{ID}+i, i = 1,2,3 \]</span>,</p>
+      <h2 id="the-polar-case">The polar Case</h2>
+    </article>
+  </main>
+  <footer>
+    <hr>
+    <br>
+     <!-- © 2021-2025 × Built with [Pandoc](https://pandoc.org/) -->
+     <p>2021-2025 Built with <a href="https://pandoc.org/">Pandoc</a></p>
+  </footer>
+</body>
+</html>
